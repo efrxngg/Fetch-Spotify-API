@@ -1,35 +1,44 @@
-const authUser = async() => {
+var token = "";
 
-    let url = 'https://accounts.spotify.com/authorize?';
-    url += 'client_id=6991557a70ff4fef80417efdacd770bb&';
-    url += 'response_type=code&';
-    url += 'redirect_uri=http://127.0.0.1:5500/auth.html&';
-    window.location.href = url;
-}
-
-
-const getJWT = async() => {
-    cliente_id = '6991557a70ff4fef80417efdacd770bb';
-    clinte_key = 'b2ed10dbad94493a96939d3ae8058744';
+const getJWT = async () => {
+    let cliente_id = '';
+    let clinte_key = '';
 
     options = {
         method: 'POST',
         headers: {
-            'Authorization': `Basic ${btoa(cliente_id + ':'+ clinte_key)}`,
+            Authorization: `Basic ${btoa(cliente_id + ":" + clinte_key)}`,
             'Content-type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({
-            code: "AQBtS0HodISYGHIsi-E9-I_XXJ4tpiITiii0LKXdp8_YvhsPl-3uI3-NY1fDckvw9jfaFZEnIhWazZemSK3warYHvCsMgLE52eAYqtJpa82MFmQ4hswKOJn1CS7J7D5OGHkpkgfSrA24dcK26Yl9Ofl_im6FqGJmnEaUCUxsOYtLQJ4",
-            redirect_uri: "http://127.0.0.1:5500/auth.html",
-            grant_type: "'authorization_code",
-        }),
-        json: true
-
-        
+        body: "grant_type=client_credentials"
     };
 
-    const request = await fetch("https://accounts.spotify.com/api/token", options);
-    console.log(request.status);
-    alert(request.status);
+    const response = await fetch("https://accounts.spotify.com/api/token", options);
+    console.log(response.status)
+    const data = await response.json();
+    console.log(data);
+    token = data.access_token;
 };
+
+const findAllArtitas = async() => {
+    let url = "https://api.spotify.com/v1/artists?ids=2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6 ";
+    options = {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`
+            
+        },
+    };
+
+    const response = await fetch(url, options);
+    const data = await response.json();
+    // console.log(data.artists);
+    data.artists.forEach(artista => {
+        console.log(artista);
+        
+    });
+    
+
+};
+
 
